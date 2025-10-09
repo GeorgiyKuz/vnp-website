@@ -33,12 +33,18 @@ header {
   padding: 20px 0;
 }
 
-.logos {
+/* Десктопные логотипы - показываем по умолчанию */
+.desktop-logos {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: 20px;
+}
+
+/* Мобильные логотипы - скрываем по умолчанию */
+.mobile-logos {
+  display: none;
 }
 
 .logo-item {
@@ -427,7 +433,6 @@ footer {
 
 /* Slider Styles */
 .logos-slider {
-  display: none;
   position: relative;
   overflow: hidden;
   width: 100%;
@@ -505,12 +510,12 @@ footer {
     padding: 0 15px;
   }
 
-  /* Скрываем обычные логотипы, показываем слайдер */
-  .logos {
+  /* Скрываем десктопные логотипы, показываем слайдер на мобильных */
+  .desktop-logos {
     display: none;
   }
 
-  .logos-slider {
+  .mobile-logos {
     display: block;
   }
 
