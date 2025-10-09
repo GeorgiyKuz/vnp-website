@@ -1,4 +1,4 @@
-// Слайдер для логотипов на мобильных
+// Слайдер для логотипов на всех устройствах
 class LogosSlider {
   constructor() {
     this.slider = document.querySelector(".logos-slider");
@@ -13,18 +13,23 @@ class LogosSlider {
     this.currentSlide = 0;
     this.totalSlides = this.slides.length;
     this.autoSlideInterval = null;
+    this.slidesPerView = this.getSlidesPerView();
 
     this.init();
+  }
+
+  getSlidesPerView() {
+    const width = window.innerWidth;
+    if (width <= 480) return 1;
+    if (width <= 768) return 2;
+    if (width <= 1024) return 3;
+    return 5; // десктоп
   }
 
   init() {
     this.bindEvents();
     this.updateSlider();
-
-    // Запускаем автопрокрутку только на мобильных
-    if (window.innerWidth <= 768) {
-      this.startAutoSlide();
-    }
+    this.startAutoSlide();
   }
 
   bindEvents() {
@@ -40,21 +45,17 @@ class LogosSlider {
     // Останавливаем автопрокрутку при взаимодействии
     this.slider.addEventListener("mouseenter", () => this.stopAutoSlide());
     this.slider.addEventListener("touchstart", () => this.stopAutoSlide());
-    this.slider.addEventListener("mouseleave", () => {
-      if (window.innerWidth <= 768) {
-        this.startAutoSlide();
-      }
-    });
+    this.slider.addEventListener("mouseleave", () => this.startAutoSlide());
 
     // Обработчик ресайза окна
     window.addEventListener("resize", () => this.handleResize());
   }
 
   updateSlider() {
-    const slideWidth = this.slides[0].offsetWidth;
+    const slideWidth = 100 / this.slidesPerView;
     this.track.style.transform = `translateX(-${
       this.currentSlide * slideWidth
-    }px)`;
+    }%)`;
 
     // Обновляем точки
     this.dots.forEach((dot, index) => {
@@ -62,14 +63,16 @@ class LogosSlider {
     });
 
     // Скрываем/показываем стрелки
+    const maxSlide = this.totalSlides - this.slidesPerView;
     this.prevArrow.style.visibility =
       this.currentSlide === 0 ? "hidden" : "visible";
     this.nextArrow.style.visibility =
-      this.currentSlide === this.totalSlides - 1 ? "hidden" : "visible";
+      this.currentSlide >= maxSlide ? "hidden" : "visible";
   }
 
   nextSlide() {
-    if (this.currentSlide < this.totalSlides - 1) {
+    const maxSlide = this.totalSlides - this.slidesPerView;
+    if (this.currentSlide < maxSlide) {
       this.currentSlide++;
       this.updateSlider();
     }
@@ -83,14 +86,18 @@ class LogosSlider {
   }
 
   goToSlide(index) {
-    this.currentSlide = index;
-    this.updateSlider();
+    const maxSlide = this.totalSlides - this.slidesPerView;
+    if (index >= 0 && index <= maxSlide) {
+      this.currentSlide = index;
+      this.updateSlider();
+    }
   }
 
   startAutoSlide() {
     this.stopAutoSlide(); // Останавливаем предыдущий интервал
     this.autoSlideInterval = setInterval(() => {
-      if (this.currentSlide === this.totalSlides - 1) {
+      const maxSlide = this.totalSlides - this.slidesPerView;
+      if (this.currentSlide >= maxSlide) {
         this.currentSlide = 0;
       } else {
         this.currentSlide++;
@@ -107,14 +114,10 @@ class LogosSlider {
   }
 
   handleResize() {
+    this.slidesPerView = this.getSlidesPerView();
+    this.currentSlide = 0; // Сбрасываем на первый слайд при изменении размера
     this.updateSlider();
-
-    // Перезапускаем автопрокрутку при изменении размера
-    if (window.innerWidth <= 768 && !this.autoSlideInterval) {
-      this.startAutoSlide();
-    } else if (window.innerWidth > 768) {
-      this.stopAutoSlide();
-    }
+    this.startAutoSlide();
   }
 }
 

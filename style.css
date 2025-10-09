@@ -33,23 +33,30 @@ header {
   padding: 20px 0;
 }
 
-/* Десктопные логотипы - показываем по умолчанию */
-.desktop-logos {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 20px;
+/* Slider Styles - ОСНОВНОЙ КОНТЕЙНЕР */
+.logos-slider {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
-/* Мобильные логотипы - скрываем по умолчанию */
-.mobile-logos {
-  display: none;
+.logos-slider-track {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+
+.logos-slider-slide {
+  flex: 0 0 20%; /* 5 логотипов = 20% каждый на десктопе */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10px;
 }
 
 .logo-item {
-  flex: 1;
-  min-width: 200px;
+  width: 100%;
   text-align: center;
 }
 
@@ -78,8 +85,63 @@ header {
 .logo-item img {
   max-width: 100%;
   height: auto;
-  max-height: 80px;
+  max-height: 70px;
   transition: transform 0.3s ease;
+}
+
+/* Стрелки слайдера */
+.slider-arrows {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.slider-arrow {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  pointer-events: all;
+  transition: all 0.3s ease;
+  font-size: 18px;
+  color: var(--dark-gray);
+  box-shadow: var(--shadow);
+}
+
+.slider-arrow:hover {
+  background-color: white;
+  transform: scale(1.1);
+}
+
+/* Точки навигации */
+.slider-dots {
+  display: none; /* Скрываем точки на десктопе */
+  justify-content: center;
+  margin-top: 15px;
+  gap: 8px;
+}
+
+.slider-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.slider-dot.active {
+  background-color: white;
 }
 
 /* Event Info */
@@ -431,97 +493,20 @@ footer {
   transform: none;
 }
 
-/* Slider Styles */
-.logos-slider {
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-}
-
-.logos-slider-track {
-  display: flex;
-  transition: transform 0.3s ease;
-}
-
-.logos-slider-slide {
-  flex: 0 0 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0 10px;
-}
-
-.slider-dots {
-  display: flex;
-  justify-content: center;
-  margin-top: 15px;
-  gap: 8px;
-}
-
-.slider-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.5);
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.slider-dot.active {
-  background-color: white;
-}
-
-.slider-arrows {
-  position: absolute;
-  top: 50%;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  transform: translateY(-50%);
-  pointer-events: none;
-  z-index: 2;
-}
-
-.slider-arrow {
-  background-color: rgba(255, 255, 255, 0.8);
-  border: none;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  pointer-events: all;
-  transition: all 0.3s ease;
-  font-size: 16px;
-  color: var(--dark-gray);
-  box-shadow: var(--shadow);
-}
-
-.slider-arrow:hover {
-  background-color: white;
-  transform: scale(1.1);
-}
-
 /* Адаптивность */
+@media (max-width: 1024px) {
+  .logos-slider-slide {
+    flex: 0 0 33.333%; /* 3 логотипа в ряд на планшетах */
+  }
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 0 15px;
   }
 
-  /* Скрываем десктопные логотипы, показываем слайдер на мобильных */
-  .desktop-logos {
-    display: none;
-  }
-
-  .mobile-logos {
-    display: block;
-  }
-
-  .logo-item {
-    min-width: auto;
-    flex: none;
+  .logos-slider-slide {
+    flex: 0 0 50%; /* 2 логотипа в ряд на мобильных */
   }
 
   .logo-img-container {
@@ -576,15 +561,24 @@ footer {
   }
 
   .slider-arrow {
-    width: 25px;
-    height: 25px;
-    font-size: 14px;
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
+  }
+
+  /* Показываем точки на мобильных */
+  .slider-dots {
+    display: flex;
   }
 }
 
 @media (max-width: 480px) {
   .container {
     padding: 0 10px;
+  }
+
+  .logos-slider-slide {
+    flex: 0 0 100%; /* 1 логотип в ряд на маленьких мобильных */
   }
 
   .conference-title h1 {
@@ -611,6 +605,12 @@ footer {
 
   .logo-item img {
     max-height: 50px;
+  }
+
+  .slider-arrow {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
   }
 }
 
