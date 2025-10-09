@@ -1,4 +1,4 @@
-// Слайдер для логотипов на всех устройствах
+// Упрощенный и надежный слайдер для логотипов
 class LogosSlider {
   constructor() {
     this.slider = document.querySelector(".logos-slider");
@@ -53,21 +53,36 @@ class LogosSlider {
 
   updateSlider() {
     const slideWidth = 100 / this.slidesPerView;
-    this.track.style.transform = `translateX(-${
-      this.currentSlide * slideWidth
-    }%)`;
+    const translateX = -this.currentSlide * slideWidth;
+    this.track.style.transform = `translateX(${translateX}%)`;
 
     // Обновляем точки
     this.dots.forEach((dot, index) => {
       dot.classList.toggle("active", index === this.currentSlide);
     });
 
-    // Скрываем/показываем стрелки
+    // Обновляем состояние стрелок
+    this.updateArrows();
+  }
+
+  updateArrows() {
     const maxSlide = this.totalSlides - this.slidesPerView;
-    this.prevArrow.style.visibility =
-      this.currentSlide === 0 ? "hidden" : "visible";
-    this.nextArrow.style.visibility =
-      this.currentSlide >= maxSlide ? "hidden" : "visible";
+
+    if (this.currentSlide <= 0) {
+      this.prevArrow.style.opacity = "0.5";
+      this.prevArrow.disabled = true;
+    } else {
+      this.prevArrow.style.opacity = "1";
+      this.prevArrow.disabled = false;
+    }
+
+    if (this.currentSlide >= maxSlide) {
+      this.nextArrow.style.opacity = "0.5";
+      this.nextArrow.disabled = true;
+    } else {
+      this.nextArrow.style.opacity = "1";
+      this.nextArrow.disabled = false;
+    }
   }
 
   nextSlide() {
@@ -75,12 +90,21 @@ class LogosSlider {
     if (this.currentSlide < maxSlide) {
       this.currentSlide++;
       this.updateSlider();
+    } else {
+      // Если достигли конца, возвращаемся к началу
+      this.currentSlide = 0;
+      this.updateSlider();
     }
   }
 
   prevSlide() {
     if (this.currentSlide > 0) {
       this.currentSlide--;
+      this.updateSlider();
+    } else {
+      // Если в начале, переходим к концу
+      const maxSlide = this.totalSlides - this.slidesPerView;
+      this.currentSlide = maxSlide;
       this.updateSlider();
     }
   }
@@ -94,15 +118,9 @@ class LogosSlider {
   }
 
   startAutoSlide() {
-    this.stopAutoSlide(); // Останавливаем предыдущий интервал
+    this.stopAutoSlide();
     this.autoSlideInterval = setInterval(() => {
-      const maxSlide = this.totalSlides - this.slidesPerView;
-      if (this.currentSlide >= maxSlide) {
-        this.currentSlide = 0;
-      } else {
-        this.currentSlide++;
-      }
-      this.updateSlider();
+      this.nextSlide();
     }, 4000);
   }
 
@@ -114,10 +132,14 @@ class LogosSlider {
   }
 
   handleResize() {
+    const oldSlidesPerView = this.slidesPerView;
     this.slidesPerView = this.getSlidesPerView();
-    this.currentSlide = 0; // Сбрасываем на первый слайд при изменении размера
-    this.updateSlider();
-    this.startAutoSlide();
+
+    // Сбрасываем на первый слайд только если изменилось количество видимых слайдов
+    if (oldSlidesPerView !== this.slidesPerView) {
+      this.currentSlide = 0;
+      this.updateSlider();
+    }
   }
 }
 
@@ -129,7 +151,9 @@ class ModalManager {
     this.closeListenerModal = document.getElementById("close-listener-modal");
     this.listenerForm = document.getElementById("listener-form");
 
-    this.init();
+    if (this.listenerBtn && this.listenerModal) {
+      this.init();
+    }
   }
 
   init() {
@@ -159,23 +183,21 @@ class ModalManager {
     });
 
     // Обработка отправки формы
-    this.listenerForm.addEventListener("submit", (e) =>
-      this.handleFormSubmit(e)
-    );
+    if (this.listenerForm) {
+      this.listenerForm.addEventListener("submit", (e) =>
+        this.handleFormSubmit(e)
+      );
+    }
   }
 
   openModal() {
     this.listenerModal.style.display = "flex";
-    this.toggleBodyScroll(false);
+    document.body.style.overflow = "hidden";
   }
 
   closeModal() {
     this.listenerModal.style.display = "none";
-    this.toggleBodyScroll(true);
-  }
-
-  toggleBodyScroll(enable) {
-    document.body.style.overflow = enable ? "auto" : "hidden";
+    document.body.style.overflow = "auto";
   }
 
   async handleFormSubmit(e) {
