@@ -1,68 +1,231 @@
-const speakerBtn = document.getElementById("speaker-btn");
-const listenerBtn = document.getElementById("listener-btn");
-const listenerModal = document.getElementById("listener-modal");
-const closeListenerModal = document.getElementById("close-listener-modal");
-const listenerForm = document.getElementById("listener-form");
-const razuLink = document.getElementById("razu-link");
-const file1 = document.getElementById("file1");
-const privacyLink = document.getElementById("privacy-link");
+// Слайдер для логотипов на мобильных
+class LogosSlider {
+  constructor() {
+    this.slider = document.querySelector(".logos-slider");
+    if (!this.slider) return;
 
-listenerBtn.addEventListener("click", function (e) {
-  e.preventDefault();
-  listenerModal.style.display = "flex";
-});
+    this.track = this.slider.querySelector(".logos-slider-track");
+    this.slides = this.slider.querySelectorAll(".logos-slider-slide");
+    this.dots = this.slider.querySelectorAll(".slider-dot");
+    this.prevArrow = this.slider.querySelector(".prev-arrow");
+    this.nextArrow = this.slider.querySelector(".next-arrow");
 
-closeListenerModal.addEventListener("click", function () {
-  listenerModal.style.display = "none";
-});
+    this.currentSlide = 0;
+    this.totalSlides = this.slides.length;
+    this.autoSlideInterval = null;
 
-// Обработка отправки формы
-listenerForm.addEventListener("submit", async function (e) {
-  e.preventDefault();
+    this.init();
+  }
 
-  // Показываем пользователю, что идет отправка
-  const submitBtn = this.querySelector(".submit-btn");
-  const originalText = submitBtn.textContent;
-  submitBtn.textContent = "Отправка...";
-  submitBtn.disabled = true;
+  init() {
+    this.bindEvents();
+    this.updateSlider();
 
-  try {
-    const formData = new FormData(this);
+    // Запускаем автопрокрутку только на мобильных
+    if (window.innerWidth <= 768) {
+      this.startAutoSlide();
+    }
+  }
 
-    // Отправка через Fetch API
-    const response = await fetch(this.action, {
-      method: "POST",
-      body: formData,
-      headers: {
-        Accept: "application/json",
-      },
+  bindEvents() {
+    // Обработчики событий для стрелок
+    this.nextArrow.addEventListener("click", () => this.nextSlide());
+    this.prevArrow.addEventListener("click", () => this.prevSlide());
+
+    // Обработчики для точек
+    this.dots.forEach((dot, index) => {
+      dot.addEventListener("click", () => this.goToSlide(index));
     });
 
-    if (response.ok) {
-      alert("Регистрация успешно отправлена!");
-      listenerModal.style.display = "none";
-      this.reset(); // Очищаем форму
-    } else {
-      throw new Error("Ошибка отправки формы");
-    }
-  } catch (error) {
-    alert("Произошла ошибка при отправке. Пожалуйста, попробуйте еще раз.");
-    console.error("Error:", error);
-  } finally {
-    submitBtn.textContent = originalText;
-    submitBtn.disabled = false;
+    // Останавливаем автопрокрутку при взаимодействии
+    this.slider.addEventListener("mouseenter", () => this.stopAutoSlide());
+    this.slider.addEventListener("touchstart", () => this.stopAutoSlide());
+    this.slider.addEventListener("mouseleave", () => {
+      if (window.innerWidth <= 768) {
+        this.startAutoSlide();
+      }
+    });
+
+    // Обработчик ресайза окна
+    window.addEventListener("resize", () => this.handleResize());
   }
-});
 
-// Остальной код остается без изменений
-razuLink.addEventListener("click", function () {
-  // Теперь это обычная ссылка, алерт не нужен.
-});
+  updateSlider() {
+    const slideWidth = this.slides[0].offsetWidth;
+    this.track.style.transform = `translateX(-${
+      this.currentSlide * slideWidth
+    }px)`;
 
-file1.addEventListener("click", function (e) {
-  alert("Начинается скачивание файла.");
-});
+    // Обновляем точки
+    this.dots.forEach((dot, index) => {
+      dot.classList.toggle("active", index === this.currentSlide);
+    });
 
-speakerBtn.addEventListener("click", function (e) {
-  // Кнопка ведет на внешний сайт
+    // Скрываем/показываем стрелки
+    this.prevArrow.style.visibility =
+      this.currentSlide === 0 ? "hidden" : "visible";
+    this.nextArrow.style.visibility =
+      this.currentSlide === this.totalSlides - 1 ? "hidden" : "visible";
+  }
+
+  nextSlide() {
+    if (this.currentSlide < this.totalSlides - 1) {
+      this.currentSlide++;
+      this.updateSlider();
+    }
+  }
+
+  prevSlide() {
+    if (this.currentSlide > 0) {
+      this.currentSlide--;
+      this.updateSlider();
+    }
+  }
+
+  goToSlide(index) {
+    this.currentSlide = index;
+    this.updateSlider();
+  }
+
+  startAutoSlide() {
+    this.stopAutoSlide(); // Останавливаем предыдущий интервал
+    this.autoSlideInterval = setInterval(() => {
+      if (this.currentSlide === this.totalSlides - 1) {
+        this.currentSlide = 0;
+      } else {
+        this.currentSlide++;
+      }
+      this.updateSlider();
+    }, 4000);
+  }
+
+  stopAutoSlide() {
+    if (this.autoSlideInterval) {
+      clearInterval(this.autoSlideInterval);
+      this.autoSlideInterval = null;
+    }
+  }
+
+  handleResize() {
+    this.updateSlider();
+
+    // Перезапускаем автопрокрутку при изменении размера
+    if (window.innerWidth <= 768 && !this.autoSlideInterval) {
+      this.startAutoSlide();
+    } else if (window.innerWidth > 768) {
+      this.stopAutoSlide();
+    }
+  }
+}
+
+// Управление модальным окном
+class ModalManager {
+  constructor() {
+    this.listenerBtn = document.getElementById("listener-btn");
+    this.listenerModal = document.getElementById("listener-modal");
+    this.closeListenerModal = document.getElementById("close-listener-modal");
+    this.listenerForm = document.getElementById("listener-form");
+
+    this.init();
+  }
+
+  init() {
+    this.bindEvents();
+  }
+
+  bindEvents() {
+    this.listenerBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      this.openModal();
+    });
+
+    this.closeListenerModal.addEventListener("click", () => this.closeModal());
+
+    // Закрытие модального окна при клике вне его области
+    this.listenerModal.addEventListener("click", (e) => {
+      if (e.target === this.listenerModal) {
+        this.closeModal();
+      }
+    });
+
+    // Закрытие модального окна при нажатии Escape
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && this.listenerModal.style.display === "flex") {
+        this.closeModal();
+      }
+    });
+
+    // Обработка отправки формы
+    this.listenerForm.addEventListener("submit", (e) =>
+      this.handleFormSubmit(e)
+    );
+  }
+
+  openModal() {
+    this.listenerModal.style.display = "flex";
+    this.toggleBodyScroll(false);
+  }
+
+  closeModal() {
+    this.listenerModal.style.display = "none";
+    this.toggleBodyScroll(true);
+  }
+
+  toggleBodyScroll(enable) {
+    document.body.style.overflow = enable ? "auto" : "hidden";
+  }
+
+  async handleFormSubmit(e) {
+    e.preventDefault();
+
+    const submitBtn = this.listenerForm.querySelector(".submit-btn");
+    const originalText = submitBtn.textContent;
+
+    // Показываем состояние загрузки
+    submitBtn.textContent = "Отправка...";
+    submitBtn.disabled = true;
+
+    try {
+      const formData = new FormData(this.listenerForm);
+
+      const response = await fetch(this.listenerForm.action, {
+        method: "POST",
+        body: formData,
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      if (response.ok) {
+        alert("Регистрация успешно отправлена!");
+        this.closeModal();
+        this.listenerForm.reset();
+      } else {
+        throw new Error("Ошибка отправки формы");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Произошла ошибка при отправке. Пожалуйста, попробуйте еще раз.");
+    } finally {
+      submitBtn.textContent = originalText;
+      submitBtn.disabled = false;
+    }
+  }
+}
+
+// Инициализация после загрузки DOM
+document.addEventListener("DOMContentLoaded", function () {
+  // Инициализируем слайдер
+  new LogosSlider();
+
+  // Инициализируем управление модальными окнами
+  new ModalManager();
+
+  // Дополнительные обработчики событий
+  const file1 = document.getElementById("file1");
+  if (file1) {
+    file1.addEventListener("click", function (e) {
+      alert("Начинается скачивание файла.");
+    });
+  }
 });
