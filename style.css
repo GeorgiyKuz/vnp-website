@@ -30,33 +30,18 @@ body {
 header {
   background: linear-gradient(135deg, var(--green), var(--blue));
   color: white;
-  padding: 20px 0;
+  padding: 30px 0;
   position: relative;
 }
 
-/* Slider Styles */
-.logos-slider {
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 10px 0;
-}
-
-.logos-slider-track {
-  display: flex;
-  transition: transform 0.5s ease-in-out;
-  width: 100%;
-}
-
-.logos-slider-slide {
-  flex: 0 0 20%;
-  min-width: 20%;
-  display: flex;
-  justify-content: center;
+/* Logos Grid */
+.logos-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
   align-items: center;
-  padding: 0 10px;
+  justify-items: center;
+  width: 100%;
 }
 
 .logo-item {
@@ -94,72 +79,6 @@ header {
   max-height: 70px;
   object-fit: contain;
   transition: transform 0.3s ease;
-}
-
-/* Стрелки слайдера */
-.slider-arrows {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: space-between;
-  transform: translateY(-50%);
-  pointer-events: none;
-  z-index: 2;
-  padding: 0 10px;
-}
-
-.slider-arrow {
-  background-color: rgba(255, 255, 255, 0.9);
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  pointer-events: all;
-  transition: all 0.3s ease;
-  font-size: 20px;
-  color: var(--dark-gray);
-  box-shadow: var(--shadow);
-  font-weight: bold;
-}
-
-.slider-arrow:hover {
-  background-color: white;
-  transform: scale(1.1);
-}
-
-.slider-arrow:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* Точки навигации */
-.slider-dots {
-  display: flex;
-  justify-content: center;
-  margin-top: 15px;
-  gap: 8px;
-}
-
-.slider-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.5);
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  border: none;
-}
-
-.slider-dot.active {
-  background-color: white;
-  transform: scale(1.2);
 }
 
 /* Event Info */
@@ -513,9 +432,9 @@ footer {
 
 /* Адаптивность */
 @media (max-width: 1024px) {
-  .logos-slider-slide {
-    flex: 0 0 33.333%;
-    min-width: 33.333%;
+  .logos-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
   }
 }
 
@@ -524,9 +443,9 @@ footer {
     padding: 0 15px;
   }
 
-  .logos-slider-slide {
-    flex: 0 0 50%;
-    min-width: 50%;
+  .logos-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
   }
 
   .logo-img-container {
@@ -579,12 +498,6 @@ footer {
     width: 95%;
     margin: 20px;
   }
-
-  .slider-arrow {
-    width: 35px;
-    height: 35px;
-    font-size: 16px;
-  }
 }
 
 @media (max-width: 480px) {
@@ -592,9 +505,9 @@ footer {
     padding: 0 10px;
   }
 
-  .logos-slider-slide {
-    flex: 0 0 100%;
-    min-width: 100%;
+  .logos-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
   }
 
   .conference-title h1 {
@@ -622,21 +535,6 @@ footer {
 
   .logo-item img {
     max-height: 50px;
-  }
-
-  .slider-arrow {
-    width: 30px;
-    height: 30px;
-    font-size: 14px;
-  }
-
-  .slider-dots {
-    margin-top: 10px;
-  }
-
-  .slider-dot {
-    width: 8px;
-    height: 8px;
   }
 }
 
