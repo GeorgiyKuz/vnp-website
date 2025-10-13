@@ -133,7 +133,7 @@ header {
 }
 
 .btn-speaker {
-  background-color: var(--green);
+  background: linear-gradient(135deg, var(--green), var(--blue));
   color: white;
 }
 

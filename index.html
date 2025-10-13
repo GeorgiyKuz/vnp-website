@@ -70,6 +70,17 @@
               </div>
             </a>
           </div>
+          <div class="logo-item">
+            <a
+              href="https://ecogreenstandard.ru/ano_"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <div class="logo-img-container">
+                <img src="image/EGBS.png" alt="Логотип Аналитического центра" />
+              </div>
+            </a>
+          </div>
         </div>
       </div>
     </header>
@@ -88,10 +99,7 @@
               target="_blank"
               rel="noopener noreferrer"
             >
-              Регистрация для спикеров
-            </a>
-            <a href="#" class="btn btn-listener" id="listener-btn">
-              Регистрация для слушателей
+              Единая регистрация
             </a>
           </div>
         </div>
@@ -136,11 +144,11 @@
             <div class="program-item">
               Пленарная сессия с выступлением спикеров
             </div>
-            <div class="program-item">Трек «Зеленый офис»</div>
-            <div class="program-item">Трек «Проекты»</div>
-            <div class="program-item">Трек «Устойчивость отрасли»</div>
-            <div class="program-item">Трек «Люди»</div>
-            <div class="program-item">Трек «Исследования»</div>
+            <div class="program-item">Направление «Зеленый офис»</div>
+            <div class="program-item">Направление «Проекты»</div>
+            <div class="program-item">Направление «Устойчивость отрасли»</div>
+            <div class="program-item">Направление «Люди»</div>
+            <div class="program-item">Направление «Исследования»</div>
           </div>
         </div>
       </section>
@@ -214,58 +222,6 @@
         </p>
       </div>
     </footer>
-
-    <!-- Модальное окно регистрации -->
-    <div class="modal" id="listener-modal">
-      <div class="modal-content">
-        <h3>Регистрация для слушателей</h3>
-        <form
-          id="listener-form"
-          action="https://formspree.io/f/meorlwkl"
-          method="POST"
-        >
-          <div class="form-group">
-            <label for="fullname">ФИО</label>
-            <input type="text" id="fullname" name="fullname" required />
-          </div>
-          <div class="form-group">
-            <label for="phone">Номер телефона</label>
-            <input type="tel" id="phone" name="phone" required />
-          </div>
-          <div class="form-group">
-            <label for="email">Почта</label>
-            <input type="email" id="email" name="email" required />
-          </div>
-          <div class="form-group">
-            <label for="workplace">Место работы или учёбы</label>
-            <input type="text" id="workplace" name="workplace" required />
-          </div>
-          <div class="form-group">
-            <label for="position">Должность</label>
-            <input type="text" id="position" name="position" required />
-          </div>
-          <div class="privacy-policy">
-            <input type="checkbox" id="privacy" name="privacy" required />
-            <label for="privacy">
-              Ознакомлен с
-              <a
-                href="https://guu.ru/pdpp/?ysclid=mgb23s9dc0814496902"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                политикой обработки персональных данных
-              </a>
-            </label>
-          </div>
-          <div class="form-buttons">
-            <button type="submit" class="submit-btn">Зарегистрироваться</button>
-            <button type="button" class="close-modal" id="close-listener-modal">
-              Закрыть
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
 
     <script src="script.js"></script>
   </body>
